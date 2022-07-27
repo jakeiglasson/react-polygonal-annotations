@@ -1,19 +1,17 @@
-import React, { useState } from 'react'
-import { Image } from './components/Image';
-import { ImageUpload } from './components/ImageUpload';
-import './css/app.css';
+import React, { useState } from "react";
+import { PolygonalImage } from "./components/PolygonalImage";
+import { ImageUpload } from "./components/ImageUpload";
+import "./css/app.css";
 
 function App() {
+	const [image, setImage] = useState("");
 
-  const [image, setImage] = useState('')
-
-  return (
-    <div className="App">
-      <ImageUpload setImage={setImage} />
-      {image && <Image url={image} />}
-
-    </div>
-  );
+	return (
+		<div className='App'>
+			<ImageUpload setImage={setImage} />
+			{image && <PolygonalImage url={image} />}
+		</div>
+	);
 }
 
 export default App;

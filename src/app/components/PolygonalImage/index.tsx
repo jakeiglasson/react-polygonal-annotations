@@ -1,0 +1,1 @@
+export { PolygonalImage } from "./PolygonalImage";
