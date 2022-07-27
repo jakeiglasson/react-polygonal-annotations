@@ -36,6 +36,19 @@ export const PolygonAnnotation = ({ width, height }: Props) => {
 		}
 	};
 
+	const getMousePosOnCanvas = ({
+		e,
+		canvasContext,
+	}: {
+		e: React.MouseEvent<HTMLCanvasElement, MouseEvent>;
+		canvasContext: CanvasRenderingContext2D;
+	}) => {
+		return {
+			x: e.pageX - canvasContext.canvas.getBoundingClientRect().left, //position().left gets how far from the left start of the viewport the left side of the canvas is
+			y: e.pageY - canvasContext.canvas.getBoundingClientRect().top, // position().top gets how far from the top start of the viewport the top side of the canvas is
+		};
+	};
+
 	const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
 		const canvasContext = getCanvasContext();
 		if (canvasContext) {
@@ -47,14 +60,11 @@ export const PolygonAnnotation = ({ width, height }: Props) => {
 				};
 			}
 
-			// mouse position on canvas
-			const mousePosInCanvas = {
-				x: e.pageX - canvasContext.canvas.getBoundingClientRect().left, //position().left gets how far from the left start of the viewport the left side of the canvas is
-				y: e.pageY - canvasContext.canvas.getBoundingClientRect().top, // position().top gets how far from the top start of the viewport the top side of the canvas is
-			};
+			const mousePosInCanvas = getMousePosOnCanvas({ e, canvasContext });
 
 			annotations[editingAnnotationIndex].path.push(mousePosInCanvas);
 			annotations[editingAnnotationIndex].path.push(mousePosInCanvas); // last item is always mouse position
+
 			renderAnnotations();
 		}
 	};
@@ -63,16 +73,26 @@ export const PolygonAnnotation = ({ width, height }: Props) => {
 		const canvasContext = getCanvasContext();
 		if (canvasContext) {
 			if (editingAnnotationIndex != -1) {
-				// mouse position on canvas
-				const mousePosInCanvas = {
-					x: e.pageX - canvasContext.canvas.getBoundingClientRect().left, //position().left gets how far from the left start of the viewport the left side of the canvas is
-					y: e.pageY - canvasContext.canvas.getBoundingClientRect().top, // position().top gets how far from the top start of the viewport the top side of the canvas is
-				};
+				const mousePosInCanvas = getMousePosOnCanvas({ e, canvasContext });
+
 				annotations[editingAnnotationIndex].path.push(mousePosInCanvas);
-				annotations[editingAnnotationIndex].path.push(annotations[editingAnnotationIndex].path[0]);
+				annotations[editingAnnotationIndex].path.push(annotations[editingAnnotationIndex].path[0]); //add first point again to end selection, tells canvas where to draw the last line to
 
 				editingAnnotationIndex = -1;
 
+				renderAnnotations();
+			}
+		}
+	};
+
+	const handleMouseMoveOnCanvas = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+		const canvasContext = getCanvasContext();
+		if (canvasContext) {
+			const mousePosInCanvas = getMousePosOnCanvas({ e, canvasContext });
+
+			if (editingAnnotationIndex != -1) {
+				var lastItem = annotations[editingAnnotationIndex].path.length - 1;
+				annotations[editingAnnotationIndex].path[lastItem] = mousePosInCanvas;
 				renderAnnotations();
 			}
 		}
@@ -87,6 +107,7 @@ export const PolygonAnnotation = ({ width, height }: Props) => {
 				style={{ width: width + "px", height: height + "px" }}
 				onClick={handleCanvasClick}
 				onDoubleClick={handleDoubleClickOnCanvas}
+				onMouseMove={handleMouseMoveOnCanvas}
 			/>
 		</div>
 	);
