@@ -11,15 +11,34 @@ type AnnotationsArr = { path: { x: number; y: number }[] }[];
 
 export const PolygonAnnotation = ({ width, height }: Props) => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const canvasObj = canvasRef.current;
-	const canvasContext = canvasObj?.getContext("2d");
+	const getCanvasContext = () => canvasRef.current?.getContext("2d");
 
-	console.log({ width, height });
 	const annotations: AnnotationsArr = [];
 	let editingAnnotationIndex = -1; //idx in array "annotations", -1 if no annotation is being edited
 
+	const renderAnnotations = () => {
+		const canvasContext = getCanvasContext();
+		if (canvasContext) {
+			canvasContext.clearRect(0, 0, canvasContext.canvas.width, canvasContext.canvas.height);
+			canvasContext.fillStyle = "rgba(255, 255, 255, 0.2)";
+			canvasContext.strokeStyle = "#ffcc33";
+			canvasContext.lineWidth = 2;
+			for (var i = 0; i < annotations.length; i++) {
+				var path = annotations[i].path;
+				canvasContext.beginPath();
+				canvasContext.moveTo(path[0].x, path[0].y);
+				for (var j = 1; j < path.length; j++) {
+					canvasContext.lineTo(path[j].x, path[j].y);
+				}
+				canvasContext.fill();
+				canvasContext.stroke();
+			}
+		}
+	};
+
 	const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-		console.log("canvas click");
+		const canvasContext = getCanvasContext();
+
 		if (canvasContext) {
 			if (editingAnnotationIndex === -1) {
 				editingAnnotationIndex = annotations.length;
@@ -37,7 +56,7 @@ export const PolygonAnnotation = ({ width, height }: Props) => {
 
 			annotations[editingAnnotationIndex].path.push(mousePosInCanvas);
 			annotations[editingAnnotationIndex].path.push(mousePosInCanvas); // last item is always mouse position
-			// renderAnnotations($(this), annotations);
+			renderAnnotations();
 		}
 	};
 
@@ -47,12 +66,3 @@ export const PolygonAnnotation = ({ width, height }: Props) => {
 		</div>
 	);
 };
-
-// todo
-// draw canvas on top of image with exact dimension of image
-
-// canvas.attr("width", this.width);
-// canvas.attr("height", this.height);
-// canvas.css("width", this.width + "px");
-// canvas.css("height", this.height + "px");
-// annotationDiv.css("height", this.height + "px");
