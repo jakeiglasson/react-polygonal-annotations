@@ -38,7 +38,6 @@ export const PolygonAnnotation = ({ width, height }: Props) => {
 
 	const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
 		const canvasContext = getCanvasContext();
-
 		if (canvasContext) {
 			if (editingAnnotationIndex === -1) {
 				editingAnnotationIndex = annotations.length;
@@ -60,9 +59,35 @@ export const PolygonAnnotation = ({ width, height }: Props) => {
 		}
 	};
 
+	const handleDoubleClickOnCanvas = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
+		const canvasContext = getCanvasContext();
+		if (canvasContext) {
+			if (editingAnnotationIndex != -1) {
+				// mouse position on canvas
+				const mousePosInCanvas = {
+					x: e.pageX - canvasContext.canvas.getBoundingClientRect().left, //position().left gets how far from the left start of the viewport the left side of the canvas is
+					y: e.pageY - canvasContext.canvas.getBoundingClientRect().top, // position().top gets how far from the top start of the viewport the top side of the canvas is
+				};
+				annotations[editingAnnotationIndex].path.push(mousePosInCanvas);
+				annotations[editingAnnotationIndex].path.push(annotations[editingAnnotationIndex].path[0]);
+
+				editingAnnotationIndex = -1;
+
+				renderAnnotations();
+			}
+		}
+	};
+
 	return (
 		<div className='canvasContainer'>
-			<canvas ref={canvasRef} width={width} height={height} style={{ width: width + "px", height: height + "px" }} onClick={handleCanvasClick} />
+			<canvas
+				ref={canvasRef}
+				width={width}
+				height={height}
+				style={{ width: width + "px", height: height + "px" }}
+				onClick={handleCanvasClick}
+				onDoubleClick={handleDoubleClickOnCanvas}
+			/>
 		</div>
 	);
 };
