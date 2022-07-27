@@ -5,11 +5,12 @@ import "./css/style.css";
 type Props = {
 	width: number;
 	height: number;
+	editable?: boolean; //default true
 };
 
 type AnnotationsArr = { path: { x: number; y: number }[] }[];
 
-export const PolygonAnnotation = ({ width, height }: Props) => {
+export const PolygonAnnotation = ({ width, height, editable = true }: Props) => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const getCanvasContext = () => canvasRef.current?.getContext("2d");
 
@@ -50,37 +51,41 @@ export const PolygonAnnotation = ({ width, height }: Props) => {
 	};
 
 	const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-		const canvasContext = getCanvasContext();
-		if (canvasContext) {
-			if (editingAnnotationIndex === -1) {
-				editingAnnotationIndex = annotations.length;
-				annotations[editingAnnotationIndex] = {
-					path: [],
-					// text: "",
-				};
+		if (editable) {
+			const canvasContext = getCanvasContext();
+			if (canvasContext) {
+				if (editingAnnotationIndex === -1) {
+					editingAnnotationIndex = annotations.length;
+					annotations[editingAnnotationIndex] = {
+						path: [],
+						// text: "",
+					};
+				}
+
+				const mousePosInCanvas = getMousePosOnCanvas({ e, canvasContext });
+
+				annotations[editingAnnotationIndex].path.push(mousePosInCanvas);
+				annotations[editingAnnotationIndex].path.push(mousePosInCanvas); // last item is always mouse position
+
+				renderAnnotations();
 			}
-
-			const mousePosInCanvas = getMousePosOnCanvas({ e, canvasContext });
-
-			annotations[editingAnnotationIndex].path.push(mousePosInCanvas);
-			annotations[editingAnnotationIndex].path.push(mousePosInCanvas); // last item is always mouse position
-
-			renderAnnotations();
 		}
 	};
 
 	const handleDoubleClickOnCanvas = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
-		const canvasContext = getCanvasContext();
-		if (canvasContext) {
-			if (editingAnnotationIndex !== -1) {
-				const mousePosInCanvas = getMousePosOnCanvas({ e, canvasContext });
+		if (editable) {
+			const canvasContext = getCanvasContext();
+			if (canvasContext) {
+				if (editingAnnotationIndex !== -1) {
+					const mousePosInCanvas = getMousePosOnCanvas({ e, canvasContext });
 
-				annotations[editingAnnotationIndex].path.push(mousePosInCanvas);
-				annotations[editingAnnotationIndex].path.push(annotations[editingAnnotationIndex].path[0]); //add first point again to end selection, tells canvas where to draw the last line to
+					annotations[editingAnnotationIndex].path.push(mousePosInCanvas);
+					annotations[editingAnnotationIndex].path.push(annotations[editingAnnotationIndex].path[0]); //add first point again to end selection, tells canvas where to draw the last line to
 
-				editingAnnotationIndex = -1;
+					editingAnnotationIndex = -1;
 
-				renderAnnotations();
+					renderAnnotations();
+				}
 			}
 		}
 	};
