@@ -72,7 +72,7 @@ export const PolygonAnnotation = ({ width, height }: Props) => {
 	const handleDoubleClickOnCanvas = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
 		const canvasContext = getCanvasContext();
 		if (canvasContext) {
-			if (editingAnnotationIndex != -1) {
+			if (editingAnnotationIndex !== -1) {
 				const mousePosInCanvas = getMousePosOnCanvas({ e, canvasContext });
 
 				annotations[editingAnnotationIndex].path.push(mousePosInCanvas);
@@ -90,7 +90,7 @@ export const PolygonAnnotation = ({ width, height }: Props) => {
 		if (canvasContext) {
 			const mousePosInCanvas = getMousePosOnCanvas({ e, canvasContext });
 
-			if (editingAnnotationIndex != -1) {
+			if (editingAnnotationIndex !== -1) {
 				var lastItem = annotations[editingAnnotationIndex].path.length - 1;
 				annotations[editingAnnotationIndex].path[lastItem] = mousePosInCanvas;
 				renderAnnotations();
