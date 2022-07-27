@@ -15,7 +15,7 @@ type StatusMessageProps = {
 };
 
 export const ImageUpload = ({ setImage }: ImageUploadProps) => {
-	const [imageUrlInput, setImageUrlInput] = useState("");
+	const [imageUrlInput, setImageUrlInput] = useState("https://cdn.mos.cms.futurecdn.net/VRv8ab66tAfezxvXdXVpfe-970-80.jpg.webp");
 
 	const [statusMessage, setStatusMessage] = useState<StatusMessageProps>({ type: "", message: "" });
 
