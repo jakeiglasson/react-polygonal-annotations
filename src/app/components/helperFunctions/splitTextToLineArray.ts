@@ -6,14 +6,38 @@ export const splitTextToLineArray = (text: string): { textSplitArray: string[]; 
 	if (text.length === 18) {
 		return { textSplitArray: [text.trim()], maxTextLineWidthIndex: 0 };
 	} else if (text.length > maxCharPerLine) {
-		while (text.length >= 18) {
-			console.log("text: ", text);
+		const modifiedText = text
+			.split(" ")
+			.map((s) => {
+				if (s.length > 18) {
+					let modifiedStringArray: string[] = [];
+					const remainder = s.length % maxCharPerLine;
+					const multiple = (s.length - remainder) / maxCharPerLine;
+					if (multiple === 1) {
+						modifiedStringArray.push(s.slice(0, 18));
+						modifiedStringArray.push(s.slice(18, s.length));
+					} else {
+						for (let i = 0; i <= multiple; i++) {
+							const slice = s.slice(0 + 18 * i, 18 + 18 * i);
+							if (slice) {
+								modifiedStringArray.push(slice);
+							}
+						}
+					}
+					return modifiedStringArray.join(" ");
+				} else {
+					return s;
+				}
+			})
+			.join(" ");
+		text = modifiedText;
+		while (text.length > 18) {
 			let spaceIndex;
-			for (let i = 0; i < maxCharPerLine; i++) {
-				if (text[i] === " ") {
+			for (let i = 0; i < maxCharPerLine + 1; i++) {
+				if (text[i] === " " || text[i] === undefined) {
 					spaceIndex = i;
 				}
-				if (i > 0 && (i + 1) % maxCharPerLine === 0) {
+				if (i > 0 && (i + 1) % (maxCharPerLine + 1) === 0) {
 					if (spaceIndex || spaceIndex === 0) {
 						textArray.push(text.slice(0, spaceIndex + 1));
 					} else {
@@ -34,7 +58,7 @@ export const splitTextToLineArray = (text: string): { textSplitArray: string[]; 
 		}
 		textArray.push(text);
 		textArray.forEach((v, i) => (textArray[i] = v.trim()));
-		console.log("splitTextArray = ", textArray);
+		textArray = textArray.filter((s) => s !== "");
 		return { textSplitArray: textArray, maxTextLineWidthIndex: maxTextLineWidth.index };
 	} else {
 		return { textSplitArray: [""], maxTextLineWidthIndex: 0 };
