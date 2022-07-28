@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { httpGet } from "../helperFunctions/httpGet";
+import { SimpleInputForm } from "../SimpleInputForm";
 import "./css/style.css";
 
 // eslint-disable-next-line no-useless-escape
@@ -36,14 +37,16 @@ export const ImageUpload = ({ setImage }: ImageUploadProps) => {
 		}
 	};
 
-	return (
-		<form onSubmit={(e) => handleSubmit(e)} className='upload-form'>
+	const formContent = (
+		<>
 			<p>Add image via url (supports jpg, png, webp)</p>
 			<p>https://cdn.mos.cms.futurecdn.net/VRv8ab66tAfezxvXdXVpfe-970-80.jpg.webp</p>
 			{statusMessage && <p className={`${statusMessage.type === "error" ? "errorMessage" : "successMessage"}`}>{statusMessage.message}</p>}
 			{!statusMessage.message && <p>&nbsp;</p>}
-			<input type='text' value={imageUrlInput} onChange={handleChange} />
-			<input type='submit' value='Submit' />
-		</form>
+		</>
+	);
+
+	return (
+		<SimpleInputForm handleSubmit={handleSubmit} handleChange={handleChange} content={formContent} inputType={"text"} inputValue={imageUrlInput} />
 	);
 };
