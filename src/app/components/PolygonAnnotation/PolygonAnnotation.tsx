@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { splitTextToLineArray } from "../helperFunctions";
 import { SimpleInputForm } from "../SimpleInputForm";
 
@@ -119,6 +119,9 @@ export const PolygonAnnotation = ({ width, height, editable = true }: Props) => 
 
 	const renderToolTip = (mousePosInCanvas: Coord, annotation: AnnotationsObj) => {
 		const canvasContext = getCanvasContext();
+		if (annotation.textArray.length === 0 || (annotation.textArray.length === 1 && annotation.textArray[0] === "")) {
+			return;
+		}
 		if (canvasContext) {
 			const maxTextWidth = canvasContext.measureText(annotation.textArray[annotation.maxTextLineWidthIndex]);
 			const rectangleDimensions = [
@@ -210,6 +213,19 @@ export const PolygonAnnotation = ({ width, height, editable = true }: Props) => 
 		setRenderAnnotationInput(false);
 	};
 
+	const handleCancel = () => {
+		setRenderAnnotationInput(false);
+		setAnnotations((annotationsArray) => {
+			annotationsArray = annotationsArray.slice(0, annotationsArray.length - 1);
+			return annotationsArray;
+		});
+	};
+
+	useEffect(() => {
+		renderAnnotations();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [annotations.length]);
+
 	const formContent = (
 		<>
 			<p className='annotationInputTitle'>Annotation Name</p>
@@ -236,6 +252,7 @@ export const PolygonAnnotation = ({ width, height, editable = true }: Props) => 
 						inputType={"textarea"}
 						inputValue={currentAnnotationTextInput}
 					/>
+					<button onClick={handleCancel}>cancel</button>
 				</div>
 			)}
 		</div>

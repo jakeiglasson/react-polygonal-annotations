@@ -6,31 +6,33 @@ export const splitTextToLineArray = (text: string): { textSplitArray: string[]; 
 	if (text.length === 18) {
 		return { textSplitArray: [text.trim()], maxTextLineWidthIndex: 0 };
 	} else if (text.length > maxCharPerLine) {
-		const modifiedText = text
-			.split(" ")
-			.map((s) => {
-				if (s.length > 18) {
-					let modifiedStringArray: string[] = [];
-					const remainder = s.length % maxCharPerLine;
-					const multiple = (s.length - remainder) / maxCharPerLine;
-					if (multiple === 1) {
-						modifiedStringArray.push(s.slice(0, 18));
-						modifiedStringArray.push(s.slice(18, s.length));
-					} else {
-						for (let i = 0; i <= multiple; i++) {
-							const slice = s.slice(0 + 18 * i, 18 + 18 * i);
-							if (slice) {
-								modifiedStringArray.push(slice);
+		if (text.length > maxCharPerLine) {
+			const modifiedText = text
+				.split(" ")
+				.map((s) => {
+					if (s.length > 18) {
+						let modifiedStringArray: string[] = [];
+						const remainder = s.length % maxCharPerLine;
+						const multiple = (s.length - remainder) / maxCharPerLine;
+						if (multiple === 1) {
+							modifiedStringArray.push(s.slice(0, 18));
+							modifiedStringArray.push(s.slice(18, s.length));
+						} else {
+							for (let i = 0; i <= multiple; i++) {
+								const slice = s.slice(0 + 18 * i, 18 + 18 * i);
+								if (slice) {
+									modifiedStringArray.push(slice);
+								}
 							}
 						}
+						return modifiedStringArray.join(" ");
+					} else {
+						return s;
 					}
-					return modifiedStringArray.join(" ");
-				} else {
-					return s;
-				}
-			})
-			.join(" ");
-		text = modifiedText;
+				})
+				.join(" ");
+			text = modifiedText;
+		}
 		while (text.length > 18) {
 			let spaceIndex;
 			for (let i = 0; i < maxCharPerLine + 1; i++) {
@@ -61,6 +63,6 @@ export const splitTextToLineArray = (text: string): { textSplitArray: string[]; 
 		textArray = textArray.filter((s) => s !== "");
 		return { textSplitArray: textArray, maxTextLineWidthIndex: maxTextLineWidth.index };
 	} else {
-		return { textSplitArray: [""], maxTextLineWidthIndex: 0 };
+		return { textSplitArray: [text], maxTextLineWidthIndex: 0 };
 	}
 };
