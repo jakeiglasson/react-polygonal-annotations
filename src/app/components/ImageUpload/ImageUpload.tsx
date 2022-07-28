@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { httpGet } from "../../helperFunctions/httpGet";
+import { httpGet } from "../helperFunctions/httpGet";
 import "./css/style.css";
 
 // eslint-disable-next-line no-useless-escape
