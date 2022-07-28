@@ -157,7 +157,7 @@ export const PolygonAnnotation = ({ width, height, editable = true }: Props) => 
 
 		if (canvasContext && canvasContext) {
 			if (editingAnnotationIndex === -1) {
-				for (var i = 0; i < annotations.length; i++) {
+				for (var i = annotations.length - 1; i >= 0; i--) {
 					var path = annotations[i].path;
 
 					canvasContext.beginPath();
