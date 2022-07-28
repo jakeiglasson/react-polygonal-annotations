@@ -6,17 +6,24 @@
 	top: 0;
 	left: 0;
 }
-.textCanvas {
-	z-index: 1;
-	pointer-events: none;
-	// background-color: red;
-}
 
-// .selectionInput {
-// 	position: absolute;
-// 	width: 100%;
-// 	height: 100%;
-// 	top: 0;
-// 	z-index: 1;
-// 	background-color: rgba(0, 128, 0, 0.226);
-// };
+.selectionInput {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	z-index: 1;
+
+	form {
+		margin: 16px;
+
+		.annotationInputTitle {
+			background-color: white;
+			padding: 4px;
+		}
+
+		textarea {
+			resize: vertical;
+		}
+	}
+}
