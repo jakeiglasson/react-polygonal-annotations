@@ -129,14 +129,6 @@ export const PolygonAnnotation = ({ width, height, editable = true }: Props) => 
 				},
 			];
 
-			// space between lines for 16px fontsize is 16 + 4
-			// const getTextWidth = (txt: string, font: string) => {
-			// 	canvasContext.font = font;
-			// 	const tsize = { width: canvasContext.measureText(txt).width, height: parseInt(canvasContext.font) };
-			// 	return tsize;
-			// };
-			// const tsize = get_text_size("test", `${fontSize}px ${fontFamily}`);
-
 			// border fill rect
 			canvasContext.fillStyle = "#f5f5dc";
 			canvasContext.fillRect(rectangleDimensions[0].x, rectangleDimensions[0].y, rectangleDimensions[1].x, rectangleDimensions[1].y);
