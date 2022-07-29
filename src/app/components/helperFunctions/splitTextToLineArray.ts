@@ -34,7 +34,7 @@ export const splitTextToLineArray = (text: string): { textSplitArray: string[]; 
 				}
 			})
 			.join(" ")
-			.replace(/\s\s+/g, " ");
+			.replace(/\s\s+/g, " "); // remove extra white spaces, e.g 'the    fox' becomes 'the fox'
 		textArray = modifiedText.split(" ");
 		textArray.forEach((s, i) => {
 			if (s.length > maxTextLineWidth.width) {
